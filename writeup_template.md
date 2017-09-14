@@ -54,11 +54,11 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
   6  | -pi/2      | 0             | 0                 | q6
   EE | 0          | 0             | 0.303 (J6_X+JG_X) | 0
 
-  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense.
+  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of diagram below.
 
   ![Insert sketch for kr210 joint and link here][DH_diagram]
 
-  From "kr210.urdf.xacro' file except below, the "a" and "d" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation
+  From "kr210.urdf.xacro' file excerpt below, the "a" and "d" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation
 
   - a(i-1) (link length) = distance from Z(i−1) to Z(i) measured along X(i-1) where X(i-1) is perpendicular to both Z(i−1) to Z(i)
 
