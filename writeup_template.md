@@ -42,6 +42,7 @@ Here is an example of how to include an image in your writeup.
 ![alt text][forward_kinematics.rviz]
 
 - Below is the DH table populated (more details on extraction steps as below)
+Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and so on.
 
   i  | alpha(i-1) | a(i-1)        | d(i)              | theta(i)
   ---| ---        | ---           | ---               | ---
