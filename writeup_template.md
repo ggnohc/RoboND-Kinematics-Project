@@ -38,7 +38,7 @@ You're reading it!
 
 Here is an example of how to include an image in your writeup.
 
-- Below is the Kuka 210 as shown in Rviz, with links labelled.
+- Below is the Kuka 210 as shown in Rviz, with joints labelled.
 ![alt text][forward_kinematics.rviz]
 
 - Below is the DH table populated (more details on extraction steps as below)
