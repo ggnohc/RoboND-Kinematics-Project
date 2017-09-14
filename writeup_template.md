@@ -45,13 +45,13 @@ Here is an example of how to include an image in your writeup.
 
   i | alpha(i-1) | a(i-1) | d(i) | theta(i)
   --- | --- | --- | --- | ---
-  1 | 0 | 0 | 0.75 (J1_Z+J2_Z) | 0
-  2 | - pi/2 | 0.35 (J2_X) | 0 | 0
-  3 | 0 | 1.25 (J3_Z) | 0 | 0
-  4 |  pi | -0.054 (J4_Z) | 1.5 (J4_X+J5_X) | 0
-  5 | - pi | 0 | 0 | 0
-  6 | - pi | 0 | 0 | 0
-  EE | 0 | 0 | 0.193+0.0375(J6_X+JG_X) | 0
+  1 | 0 | 0 | 0.75 (J1_Z+J2_Z) | q1
+  2 | -pi/2 | 0.35 (J2_X) | 0 | q2-pi/2
+  3 | 0 | 1.25 (J3_Z) | 0 | q3
+  4 | -pi/2 | -0.054 (J4_Z) | 1.5 (J4_X+J5_X) | q4
+  5 | pi/2 | 0 | 0 | q5
+  6 | -pi/2 | 0 | 0 | q6
+  EE | 0 | 0 | 0.303 (J6_X+JG_X) | 0
 
   - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense.
 
@@ -119,7 +119,7 @@ Here is an example of how to include an image in your writeup.
   </joint>
   ```
 
-  - theta(i) (joint angle) = angle between X(i-1) to X(i) measured about Z(i) in a right-hand sense. A variable since all kr210 joints are revolute joint
+  - theta(i) (joint angle) = angle between X(i-1) to X(i) measured about Z(i) in a right-hand sense. A variable since all kr210 joints are revolute joint, except EE joint
 
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 
