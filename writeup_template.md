@@ -38,10 +38,10 @@ You're reading it!
 
 Here is an example of how to include an image in your writeup.
 
-* Below is the Kuka 210 as shown in Rviz, with links labelled.
+- Below is the Kuka 210 as shown in Rviz, with links labelled.
 ![alt text][forward_kinematics.rviz]
 
-* Below is the DH table populated (more details on extraction steps as below)
+- Below is the DH table populated (more details on extraction steps as below)
 
 i | alpha(i-1) | a(i-1) | d(i) | theta(i)
 --- | --- | --- | --- | ---
@@ -53,11 +53,11 @@ i | alpha(i-1) | a(i-1) | d(i) | theta(i)
 6 | - pi | 0 | 0 | 0
 EE | 0 | 0 | 0 | 0
 
-  * alpha(i−1)​​ (twist angle) = angle between ​Z​(​​​i−1)​​ and ​Z​(i)​​ measured about ​X​(​​​i−1)​​ in a right-hand sense.
+  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense.
 
   ![Insert sketch for kr210 joint and link here][DH_diagram]
 
-  * a(i-1)​​ (link length) = distance from ​Z​(i−1)​​ to ​Z​(i)​​ measured along ​X​(i-1)​​​​​ where ​X​(i-1)​​ is perpendicular to both ​Z​(i−1)​​ to ​Z​(i)​​​
+  - a(i-1) (link length) = distance from Z(i−1) to Z(i) measured along X(i-1) where X(i-1) is perpendicular to both Z(i−1) to Z(i)
 
 From "kr210.urdf.xacro' file except below, the "a" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation
 
@@ -107,8 +107,8 @@ From "kr210.urdf.xacro' file except below, the "a" parameter can be obtained fro
   </joint>
 ```
 
-  * d​(i)​​ (link offset) = signed distance from ​X​(i-1)​​ to ​X​(i) measured along ​Z​(i)​.
-  * theta(i)​​ (joint angle) = angle between ​X​(i-1)​​ to ​X​(i) measured about ​Z​(i) in a right-hand sense. A variable since all kr210 joints are revolute joint
+  - d(i) (link offset) = signed distance from X(i-1) to X(i) measured along Z(i).
+  - theta(i) (joint angle) = angle between X(i-1) to X(i) measured about Z(i) in a right-hand sense. A variable since all kr210 joints are revolute joint
 
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 
