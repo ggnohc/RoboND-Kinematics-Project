@@ -43,15 +43,15 @@ Here is an example of how to include an image in your writeup.
 
 - Below is the DH table populated (more details on extraction steps as below)
 
-  i | alpha(i-1) | a(i-1) | d(i) | theta(i)
-  --- | --- | --- | --- | ---
-  1 | 0 | 0 | 0.75 (J1_Z+J2_Z) | q1
-  2 | -pi/2 | 0.35 (J2_X) | 0 | q2-pi/2
-  3 | 0 | 1.25 (J3_Z) | 0 | q3
-  4 | -pi/2 | -0.054 (J4_Z) | 1.5 (J4_X+J5_X) | q4
-  5 | pi/2 | 0 | 0 | q5
-  6 | -pi/2 | 0 | 0 | q6
-  EE | 0 | 0 | 0.303 (J6_X+JG_X) | 0
+  i  | alpha(i-1) | a(i-1)        | d(i)              | theta(i)
+  ---| ---        | ---           | ---               | ---
+  1  | 0          | 0             | 0.75 (J1_Z+J2_Z)  | q1
+  2  | -pi/2      | 0.35 (J2_X)   | 0                 | q2-pi/2
+  3  | 0          | 1.25 (J3_Z)   | 0                 | q3
+  4  | -pi/2      | -0.054 (J4_Z) | 1.5 (J4_X+J5_X)   | q4
+  5  | pi/2       | 0             | 0                 | q5
+  6  | -pi/2      | 0             | 0                 | q6
+  EE | 0          | 0             | 0.303 (J6_X+JG_X) | 0
 
   - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense.
 
