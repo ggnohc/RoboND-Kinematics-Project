@@ -22,6 +22,9 @@
 [image3]: ./misc_images/misc2.png
 [forward_kinematics.rviz]: ./misc_images/forward_kinematics.rviz.jpg
 [DH_diagram]: ./misc_images/DH_diagram2.png
+[total_transform_formula]: ./misc_images/total_transform_formula.png
+[2_rot_2_trans]: ./misc_images/2_rot_2_trans.png
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -123,6 +126,20 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
   - theta(i) (joint angle) = angle between X(i-1) to X(i) measured about Z(i) in a right-hand sense. A variable since all kr210 joints are revolute joint, except EE joint
 
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
+
+
+![Insert total transform formula here][total_transform_formula]
+
+By referring to formula above, individual transformation matrix are constructed as below, with transformation matrix from base frame to frame 1 as below:
+
+``` python
+T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
+               [ sin(q1)*cos(alpha0), cos(q1)*cos(alpha0), -sin(alpha0), -sin(alpha0)*d1],
+               [ sin(q1)*sin(alpha0), cos(q1)*sin(alpha0),  cos(alpha0),  cos(alpha0)*d1],
+               [                   0,                   0,            0,               1]])
+
+T0_1 = T0_1.subs(s)
+```
 
 Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 --- | --- | --- | --- | ---
