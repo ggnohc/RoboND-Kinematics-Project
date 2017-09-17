@@ -150,7 +150,29 @@ https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-61
 
 And here's where you can draw out and show your math for the derivation of your theta angles.
 
-![alt text][image2]
+
+
+* Use Inverse Position Kinematics to calculate **Theta1, 2 and 3**.
+
+  * Theta1 can be calculated using atan2 using diagram below:
+
+
+  * [ ] Draw diagram to depict calculation of Theta1
+
+    * Theta2 and Theta3 is derived from diagram below:
+    ![alt text][image2]
+
+    * Refer top part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
+
+* Use Inverse Position to calculate **Theta4, 5 and 6**.
+  * From relationship below:
+    * **R0_6 = R0_1 * R1_2 * R2_3 * R3 * R4_5 * R5_6** (resultant transform based on multiplication of individual rotation)
+    * **R0_6 = Rrpy** (homogeneous roll pitch yaw rotation between base link and gripper)
+  * Comparing the RHS (Right Hand Side), we can deduce:
+    * **R3_6 = inv(R0_3) * Rrpy** where by _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_
+
+  * Refer bottom part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
+
 
 ### Project Implementation
 
