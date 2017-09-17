@@ -24,6 +24,10 @@
 [DH_diagram]: ./misc_images/DH_diagram2.png
 [total_transform_formula]: ./misc_images/total_transform_formula.png
 [2_rot_2_trans]: ./misc_images/2_rot_2_trans.png
+[extrinsicxyz]: ./misc_images/extrinsicxyz.png
+[euler_beta]: ./misc_images/euler_beta.png
+
+
 
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
@@ -172,6 +176,16 @@ And here's where you can draw out and show your math for the derivation of your 
     * **R3_6 = inv(R0_3) * Rrpy** where by _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_
 
   * Refer bottom part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
+  * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below:
+
+  ![Insert composite rotation matrix i formula here][extrinsicxyz]
+
+  alpha = atan2(r21, r11)
+  ![Insert Euler beta formula here][euler_beta]
+  gamma = atan2(r32, r33)
+
+  https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/a124f98b-1ed5-45f5-b8eb-6c40958c1a6b
+
 
 
 ### Project Implementation
