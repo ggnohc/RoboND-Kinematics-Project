@@ -61,9 +61,10 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
   6  | -pi/2      | 0             | 0                 | q6
   EE | 0          | 0             | 0.303 (J6_X+JG_X) | 0
 
-  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of diagram below.
+  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of **Diagram 1** below.
 
-  ![Insert sketch for kr210 joint and link here][DH_diagram]
+  ![Insert sketch for kr210 joint and link here][DH_diagram] **Diagram 1**
+
 
   From "kr210.urdf.xacro' file excerpt below, the "a" and "d" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation
 
@@ -157,16 +158,16 @@ And here's where you can draw out and show your math for the derivation of your 
 
 
 * Use Inverse Position Kinematics to calculate **Theta1, 2 and 3**.
+  * Since the KR210 satisfies the design of having spherical wrist with the common point of intersection being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
 
-  * Theta1 can be calculated using atan2 using diagram below:
+  * Theta1 (a.k.a. q1) is calculated by projecting Zc to based frame and hence:
+    q1 = atan2(Yc, Xc)
 
 
-  * [ ] Draw diagram to depict calculation of Theta1
-
-    * Theta2 and Theta3 is derived from diagram below:
+  * Theta2 and Theta3 is derived from diagram below:
     ![alt text][image2]
 
-    * Refer top part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
+  * Refer top part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
 
 * Use Inverse Position to calculate **Theta4, 5 and 6**.
   * From relationship below:
