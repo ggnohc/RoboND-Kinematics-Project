@@ -158,14 +158,17 @@ And here's where you can draw out and show your math for the derivation of your 
 
 
 * Use Inverse Position Kinematics to calculate **Theta1, 2 and 3**.
-  * Since the KR210 satisfies the design of having spherical wrist with the common point of intersection being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
+  * Since the KR210 satisfies the design of having spherical wrist with the common point of intersection being the joint 5 (J5) being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
 
   * Theta1 (a.k.a. q1) is calculated by projecting Zc to based frame and hence:
+    ```
     q1 = atan2(Yc, Xc)
-
+    ```
 
   * Theta2 and Theta3 is derived from diagram below:
     ![alt text][image2]
+
+  * Go through this https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/91d017b1-4493-4522-ad52-04a74a01094c/concepts/a1abb738-84ee-48b1-82d7-ace881b5aec0 and this https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s again
 
   * Refer top part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
 
