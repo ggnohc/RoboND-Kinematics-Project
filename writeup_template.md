@@ -26,6 +26,9 @@
 [2_rot_2_trans]: ./misc_images/2_rot_2_trans.png
 [extrinsicxyz]: ./misc_images/extrinsicxyz.png
 [euler_beta]: ./misc_images/euler_beta.png
+[theta2_theta3]: ./misc_images/theta2_theta3.png
+[consine_rule]: ./misc_images/consine_rule.gif
+[consine_rule_formula]: ./misc_images/consine_rule_formula.png
 
 
 
@@ -165,9 +168,13 @@ And here's where you can draw out and show your math for the derivation of your 
     q1 = atan2(Yc, Xc)
     ```
 
-  * Theta2 and Theta3 is derived from diagram below:
-    ![alt text][image2]
+  * Theta2 and Theta3 is derived from side A, B and C with cosine rule:
+    ![theta2_theta3 calculation][theta2_theta3]
 
+    ![consine rule triangle][consine_rule]
+    where cos(A) = (b\*\*2 + c\*\*2 - a\*\*2)/(2bc)
+    Note: _When referring to external resources it is critical to know the convention being employed, as Udacity course material is based on **modified** DH parameters while external resources might be using conventional DH parameters, their difference is outlined as below:_
+    https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters#Modified_DH_parameters
   * Go through this https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/91d017b1-4493-4522-ad52-04a74a01094c/concepts/a1abb738-84ee-48b1-82d7-ace881b5aec0 and this https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s again
 
   * Refer top part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
@@ -182,11 +189,11 @@ And here's where you can draw out and show your math for the derivation of your 
   * Refer bottom part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
   * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below:
 
-  ![Insert composite rotation matrix i formula here][extrinsicxyz]
+    ![Insert composite rotation matrix i formula here][extrinsicxyz]
 
-  alpha = atan2(r21, r11)
-  ![Insert Euler beta formula here][euler_beta]
-  gamma = atan2(r32, r33)
+    * alpha = atan2(r21, r11)
+    * beta = atan2 (-r31, sqrt(r11*r11+r21*r21))
+    * gamma = atan2(r32, r33)
 
   https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/a124f98b-1ed5-45f5-b8eb-6c40958c1a6b
 
