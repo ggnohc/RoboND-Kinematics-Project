@@ -29,7 +29,8 @@
 [theta2_theta3]: ./misc_images/theta2_theta3.png
 [consine_rule]: ./misc_images/consine_rule.gif
 [consine_rule_formula]: ./misc_images/consine_rule_formula.png
-
+[WC]: ./misc_images/WC.png
+[inverse-kinematics]: ./misc_images/inverse-kinematics.png
 
 
 
@@ -64,9 +65,9 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
   6  | -pi/2      | 0             | 0                 | q6
   EE | 0          | 0             | 0.303 (J6_X+JG_X) | 0
 
-  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of **Diagram 1** below.
+  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of **Figure 1** below.
 
-  ![Insert sketch for kr210 joint and link here][DH_diagram] **Diagram 1**
+  ![Insert sketch for kr210 joint and link here][DH_diagram] **Figure 1**
 
 
   From "kr210.urdf.xacro' file excerpt below, the "a" and "d" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation
@@ -138,7 +139,7 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
 
 ![Insert total transform formula here][total_transform_formula]
 
-By referring to formula above, individual transformation matrix are constructed as below, with transformation matrix from base frame to frame 1 as below:
+By referring to formula above, individual transformation matrix are constructed as below, with transformation matrix from base frame to frame 1 as example below:
 
 ``` python
 T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
@@ -163,16 +164,28 @@ And here's where you can draw out and show your math for the derivation of your 
 * Use Inverse Position Kinematics to calculate **Theta1, 2 and 3**.
   * Since the KR210 satisfies the design of having spherical wrist with the common point of intersection being the joint 5 (J5) being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
 
+  * The WC can be obtained from formula below:
+    ![inverse-kinematics][inverse-kinematics]
+    ![WC formula][WC]
+
+    where Px, Py, Pz = end-effector (EE) a.k.a gripper (G) positions; WCx, WCy, WCz = wrist positions;
+    dG = from DH table as depicted in _Figure 1_ of _Section 1_ above.
+
+    By adopting _x-y-z extrinsic rotations_ convention, R0_6 can be rewritten as:
+
+    _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_, where _R_corr_ is the correctional rotation matrix to compensate for mismatch between URDF and DH table.  The roll, pitch and yaw values of EE are obtained from ROS simulation and converted from quaternions to radian using transformation.euler_from_quaternion() method.
+
+
+
   * Theta1 (a.k.a. q1) is calculated by projecting Zc to based frame and hence:
     ```
     q1 = atan2(Yc, Xc)
     ```
 
   * Theta2 and Theta3 is derived from side A, B and C with cosine rule:
+    where _cos(a) = (B\*\*2 + C\*\*2 - A\*\*2)/(2BC)_ and similarly for other angles/sides of the triangle.
     ![theta2_theta3 calculation][theta2_theta3]
 
-    ![consine rule triangle][consine_rule]
-    where cos(A) = (b\*\*2 + c\*\*2 - a\*\*2)/(2bc)
     Note: _When referring to external resources it is critical to know the convention being employed, as Udacity course material is based on **modified** DH parameters while external resources might be using conventional DH parameters, their difference is outlined as below:_
     https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters#Modified_DH_parameters
   * Go through this https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/91d017b1-4493-4522-ad52-04a74a01094c/concepts/a1abb738-84ee-48b1-82d7-ace881b5aec0 and this https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s again
@@ -187,7 +200,7 @@ And here's where you can draw out and show your math for the derivation of your 
     * **R3_6 = inv(R0_3) * Rrpy** where by _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_
 
   * Refer bottom part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
-  * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below:
+  * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below (source: _Lesson 2-8 Euler Angles from a Rotation Matrix_):
 
     ![Insert composite rotation matrix i formula here][extrinsicxyz]
 
