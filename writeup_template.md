@@ -65,6 +65,7 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
   6  | -pi/2      | 0             | 0                 | q6
   EE | 0          | 0             | 0.303 (J6_X+JG_X) | 0
 
+
   - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of **Figure 1** below.
 
   ![Insert sketch for kr210 joint and link here][DH_diagram] **Figure 1**
