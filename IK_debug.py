@@ -205,7 +205,7 @@ def test_code(test_case):
     R0_3 = T0_1[0:3,0:3]*T1_2[0:3,0:3]*T2_3[0:3,0:3]
     R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3:theta3})
 
-    R3_6 = R0_3.inv("LU") * ROT_EE
+    R3_6 = R0_3.inv("LU") * Rrpy_ee
 
     # Euler angles from rotation matrix
     theta4 = atan2(R3_6[2,2], -R3_6[0,2])
@@ -239,6 +239,7 @@ def test_code(test_case):
         wc_x_e = abs(your_wc[0]-test_case[1][0])
         wc_y_e = abs(your_wc[1]-test_case[1][1])
         wc_z_e = abs(your_wc[2]-test_case[1][2])
+        print("your_wc[0]:{}; your_wc[1]:{}; your_wc[2]:{}".format(your_wc[0],your_wc[1], your_wc[2]))
         wc_offset = sqrt(wc_x_e**2 + wc_y_e**2 + wc_z_e**2)
         print ("\nWrist error for x position is: %04.8f" % wc_x_e)
         print ("Wrist error for y position is: %04.8f" % wc_y_e)
