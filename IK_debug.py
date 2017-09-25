@@ -135,9 +135,9 @@ def test_code(test_case):
                   [       0,        0, 1, 0],
                   [       0,        0, 0, 1]])
 
-    R_corr = simplify(R_z * R_y)
+    T_corr = simplify(R_z * R_y)
 
-    T_tot = simplify(T0_G * R_corr)
+    T_tot = simplify(T0_G * T_corr)
 
     # Extract end-effector position and orientation from request
     # px,py,pz = end-effector position
@@ -164,6 +164,7 @@ def test_code(test_case):
                     [sin(yaw),  cos(yaw),        0],
                     [       0,         0,        1]])
 
+    R_corr = ROT_z.subs(yaw, pi)*ROT_y.subs(pitch, -pi/2)  #TODO: Check why exercise use Homogeneous matrix instead of rotation matrix
     Rrpy_ee = ROT_z * ROT_y * ROT_x * R_corr
     Rrpy_ee = Rrpy_ee.subs({'roll': roll, 'pitch': pitch, 'yaw': yaw})
 
