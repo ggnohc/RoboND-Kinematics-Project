@@ -63,9 +63,9 @@ def test_code(test_case):
     ##
 
     ## Insert IK code here!
-    alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6 = symbols('q0:7')
+    alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6 = symbols('alpha0:7')
     a0, a1, a2, a3, a4, a5, a6 = symbols('a0:7')
-    d1, d2, d3, d4, d5, d6, d7 = symbols('a1:8')
+    d1, d2, d3, d4, d5, d6, d7 = symbols('d1:8')
     q1, q2, q3, q4, q5, q6, q7 = symbols('q1:8')
 
     # Create Modified DH parameters
@@ -121,10 +121,12 @@ def test_code(test_case):
     T6_G = T6_G.subs(s)
 
     # Transform from base link to gripper
-    T0_G = simplify(T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G)
+    #T0_G = simplify(T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G)
+    T0_G = T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G
 
     # Added correction rotation matrix to compensate for orientation difference
       # of gripper link in URDF vs DH convention
+    """
     R_y = Matrix([[ cos(-pi/2),  0, sin(-pi/2), 0],
                   [          0,  1,          0, 0],
                   [ -sin(-pi/2), 0, cos(-pi/2), 0],
@@ -138,6 +140,7 @@ def test_code(test_case):
     T_corr = simplify(R_z * R_y)
 
     T_tot = simplify(T0_G * T_corr)
+    """
 
     # Extract end-effector position and orientation from request
     # px,py,pz = end-effector position
@@ -150,23 +153,24 @@ def test_code(test_case):
         [req.poses[x].orientation.x, req.poses[x].orientation.y,
             req.poses[x].orientation.z, req.poses[x].orientation.w])
 
-    roll, pitch, yaw = symbols('roll pitch yaw')
+    r, p, y = symbols('r p y')
 
     ROT_x = Matrix([[1,              0,          0],
-                    [0,      cos(roll), -sin(roll)],
-                    [0,      sin(roll), cos(roll)]])
+                    [0,      cos(r), -sin(r)],
+                    [0,      sin(r), cos(r)]])
 
-    ROT_y = Matrix([[cos(pitch),     0, sin(pitch)],
+    ROT_y = Matrix([[cos(p),     0, sin(p)],
                     [         0,     1,          0],
-                    [-sin(pitch),    0, cos(pitch)]])
+                    [-sin(p),    0, cos(p)]])
 
-    ROT_z = Matrix([[cos(yaw), -sin(yaw),        0],
-                    [sin(yaw),  cos(yaw),        0],
+    ROT_z = Matrix([[cos(y), -sin(y),        0],
+                    [sin(y),  cos(y),        0],
                     [       0,         0,        1]])
+    Rrpy_ee = ROT_z * ROT_y * ROT_x
 
-    R_corr = ROT_z.subs(yaw, pi)*ROT_y.subs(pitch, -pi/2)  #TODO: Check why exercise use Homogeneous matrix instead of rotation matrix
+    R_corr = ROT_z.subs(y, pi)*ROT_y.subs(p, -pi/2)  #TODO: Check why exercise use Homogeneous matrix instead of rotation matrix
     Rrpy_ee = ROT_z * ROT_y * ROT_x * R_corr
-    Rrpy_ee = Rrpy_ee.subs({'roll': roll, 'pitch': pitch, 'yaw': yaw})
+    Rrpy_ee = Rrpy_ee.subs({'r': roll, 'p': pitch, 'y': yaw})
 
     # EE position w.r.t base_link
     EE = Matrix([px, py, pz])
@@ -174,32 +178,46 @@ def test_code(test_case):
     # Wrist center  w.r.t base_link
     d7 = 0.33 # from URDF
     WC = EE - d7*Rrpy_ee*Matrix([0,0,1])
+    print ("WC: {}".format(WC))
 
     # Find theta1
     theta1 = atan2(WC[1], WC[0])
+    print("theta1: {}".format(theta1))
 
     # Find q2
-    J2_X = a1*cos(theta1)
-    J2_Y = a1*sin(theta1)
+    a1 = 0.35
+    #J2_X = a1*cos(theta1)
+    J2_X = 0.35*cos(theta1)
+    print("J2_X: {}".format(J2_X))
+    #J2_Y = a1*sin(theta1)
+    J2_Y = 0.35*sin(theta1)
+    print("J2_Y: {}".format(J2_Y))
+    d1 = 0.75
     J2_Z = d1
+    print("J2_Z: {}".format(J2_Z))
     J5_X = WC[0]
+    print("J5_X: {}".format(J5_X))
     J5_Y = WC[1]
+    print("J5_Y: {}".format(J5_Y))
     J5_Z = WC[2]
+    print("J5_Z: {}".format(J5_Z))
 
     side_A = 1.4995 #from URDF and cosine rule
     side_B = sqrt((J5_X-J2_X)**2 + (J5_Y-J2_Y)**2 + (J5_Z-J2_Z)**2)
     side_C = 1.25 #from URDF
 
     #Now that we have all the sides, we can find angle_a with simple trigonometry
-    angle_a = (side_B**2 + side_C**2 - side_A**2)/(2*side_B*side_C)
-    angle_b = (side_A**2 + side_C**2 - side_B**2)/(2*side_A*side_C)
-    angle_c = (side_A**2 + side_B**2 - side_C**2)/(2*side_A*side_B)
+    angle_a = acos((side_B**2 + side_C**2 - side_A**2)/(2*side_B*side_C))
+    angle_b = acos((side_A**2 + side_C**2 - side_B**2)/(2*side_A*side_C))
+    angle_c = acos((side_A**2 + side_B**2 - side_C**2)/(2*side_A*side_B))
 
     # theta2 = pi/2 - angle_a - atan2(J5_Z-J2_Z, sqrt(J5_X**2+J5_Y**2)-a1)
     theta2 = pi/2 - angle_a - atan2(J5_Z-J2_Z, sqrt((J5_X-J2_X)**2 + (J5_Y-J2_Y)**2 ))
+    print("theta2: {}".format(theta2))
 
     #https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s
     theta3 = pi/2 - (angle_b + 0.036) #TODO: check the value of 0.036 being sag in L4 of -0.054
+    print("theta3: {}".format(theta3))
 
     # Use Inverse Position to calculate Theta4, 5 and 6.
     R0_3 = T0_1[0:3,0:3]*T1_2[0:3,0:3]*T2_3[0:3,0:3]
@@ -229,6 +247,7 @@ def test_code(test_case):
     ## For error analysis please set the following variables of your WC location and EE location in the format of [x,y,z]
     your_wc = [J5_X, J5_Y, J5_Z] # <--- Load your calculated WC values in this array
     your_ee = [FK[0,3], FK[1,3], FK[2,3]] # <--- Load your calculated end effector value from your forward kinematics
+    print("FK[0,3]:{}, FK[1,3]:{}, FK[2,3]:{}".format(FK[0,3], FK[1,3], FK[2,3]))
     ########################################################################################
 
     ## Error analysis
@@ -247,6 +266,8 @@ def test_code(test_case):
         print ("Overall wrist offset is: %04.8f units" % wc_offset)
 
     # Find theta errors
+    print("theta1: {}; theta2: {}; theta3: {}".format(theta1, theta2, theta3))
+    print("theta4: {}; theta5: {}; theta6: {}".format(theta4, theta5, theta6))
     t_1_e = abs(theta1-test_case[2][0])
     t_2_e = abs(theta2-test_case[2][1])
     t_3_e = abs(theta3-test_case[2][2])
