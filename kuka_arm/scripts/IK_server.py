@@ -32,9 +32,9 @@ def handle_calculate_IK(req):
 
         ### Your FK code here
         # Create symbols
-        alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6 = symbols('q0:7')
+        alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6 = symbols('alpha0:7')
         a0, a1, a2, a3, a4, a5, a6 = symbols('a0:7')
-        d1, d2, d3, d4, d5, d6, d7 = symbols('a1:8')
+        d1, d2, d3, d4, d5, d6, d7 = symbols('d1:8')
         q1, q2, q3, q4, q5, q6, q7 = symbols('q1:8')
 
         # Create Modified DH parameters
@@ -128,13 +128,84 @@ def handle_calculate_IK(req):
                     req.poses[x].orientation.z, req.poses[x].orientation.w])
 
             ### Your IK code here
+            r, p, y = symbols('r p y')
+
+            ROT_x = Matrix([[1,              0,          0],
+                            [0,      cos(r), -sin(r)],
+                            [0,      sin(r), cos(r)]])
+
+            ROT_y = Matrix([[cos(p),     0, sin(p)],
+                            [         0,     1,          0],
+                            [-sin(p),    0, cos(p)]])
+
+            ROT_z = Matrix([[cos(y), -sin(y),        0],
+                            [sin(y),  cos(y),        0],
+                            [       0,         0,        1]])
+            Rrpy_ee = ROT_z * ROT_y * ROT_x
+
 	    # Compensate for rotation discrepancy between DH parameters and Gazebo
-	    #
-	    #
+    	    R_corr = ROT_z.subs(y, pi)*ROT_y.subs(p, -pi/2)  #TODO: Check why exercise use Homogeneous matrix instead of rotation matrix
+            Rrpy_ee = ROT_z * ROT_y * ROT_x * R_corr
+            Rrpy_ee = Rrpy_ee.subs({'r': roll, 'p': pitch, 'y': yaw})
+
 	    # Calculate joint angles using Geometric IK method
-	    #
-	    #
-            ###
+            # EE position w.r.t base_link
+            EE = Matrix([px, py, pz])
+
+            # Wrist center  w.r.t base_link
+            d7 = 0.33 # from URDF
+            WC = EE - d7*Rrpy_ee*Matrix([0,0,1])
+            print ("WC: {}".format(WC))
+
+            # Find theta1
+            theta1 = atan2(WC[1], WC[0])
+            print("theta1: {}".format(theta1))
+
+            # Find q2
+            a1 = 0.35
+            #J2_X = a1*cos(theta1)
+            J2_X = 0.35*cos(theta1)
+            print("J2_X: {}".format(J2_X))
+            #J2_Y = a1*sin(theta1)
+            J2_Y = 0.35*sin(theta1)
+            print("J2_Y: {}".format(J2_Y))
+            d1 = 0.75
+            J2_Z = d1
+            print("J2_Z: {}".format(J2_Z))
+            J5_X = WC[0]
+            print("J5_X: {}".format(J5_X))
+            J5_Y = WC[1]
+            print("J5_Y: {}".format(J5_Y))
+            J5_Z = WC[2]
+            print("J5_Z: {}".format(J5_Z))
+
+            side_A = 1.4995 #from URDF and cosine rule
+            side_B = sqrt((J5_X-J2_X)**2 + (J5_Y-J2_Y)**2 + (J5_Z-J2_Z)**2)
+            side_C = 1.25 #from URDF
+
+            #Now that we have all the sides, we can find angle_a with simple trigonometry
+            angle_a = acos((side_B**2 + side_C**2 - side_A**2)/(2*side_B*side_C))
+            angle_b = acos((side_A**2 + side_C**2 - side_B**2)/(2*side_A*side_C))
+            angle_c = acos((side_A**2 + side_B**2 - side_C**2)/(2*side_A*side_B))
+
+            # theta2 = pi/2 - angle_a - atan2(J5_Z-J2_Z, sqrt(J5_X**2+J5_Y**2)-a1)
+            theta2 = pi/2 - angle_a - atan2(J5_Z-J2_Z, sqrt((J5_X-J2_X)**2 + (J5_Y-J2_Y)**2 ))
+            print("theta2: {}".format(theta2))
+
+            #https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s
+            theta3 = pi/2 - (angle_b + 0.036) #TODO: check the value of 0.036 being sag in L4 of -0.054
+            print("theta3: {}".format(theta3))
+
+            # Use Inverse Position to calculate Theta4, 5 and 6.
+            R0_3 = T0_1[0:3,0:3]*T1_2[0:3,0:3]*T2_3[0:3,0:3]
+            R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3:theta3})
+
+            R3_6 = R0_3.inv("LU") * Rrpy_ee
+
+            # Euler angles from rotation matrix
+            theta4 = atan2(R3_6[2,2], -R3_6[0,2])
+            theta5 = atan2(sqrt(R3_6[0,2]**2 + R3_6[2,2]**2), R3_6[1,2])
+            theta6 = atan2(-R3_6[1,1], R3_6[1,0])
 
             # Populate response for the IK request
             # In the next line replace theta1,theta2...,theta6 by your joint angle variables
