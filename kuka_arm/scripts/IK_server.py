@@ -192,7 +192,6 @@ def handle_calculate_IK(req):
             theta2 = pi/2 - angle_a - atan2(J5_Z-J2_Z, sqrt((J5_X-J2_X)**2 + (J5_Y-J2_Y)**2 ))
             print("theta2: {}".format(theta2))
 
-            #https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s
             theta3 = pi/2 - (angle_b + 0.036) #TODO: check the value of 0.036 being sag in L4 of -0.054
             print("theta3: {}".format(theta3))
 
@@ -202,13 +201,13 @@ def handle_calculate_IK(req):
 
             R3_6 = R0_3.inv("LU") * Rrpy_ee
 
-            # Euler angles from rotation matrix
+            # Euler angles from a rotation matrix lesson TODO: Check the formula against lecture
             theta4 = atan2(R3_6[2,2], -R3_6[0,2])
             theta5 = atan2(sqrt(R3_6[0,2]**2 + R3_6[2,2]**2), R3_6[1,2])
             theta6 = atan2(-R3_6[1,1], R3_6[1,0])
 
-            # Populate response for the IK request
-            # In the next line replace theta1,theta2...,theta6 by your joint angle variables
+        # Populate response for the IK request
+        # In the next line replace theta1,theta2...,theta6 by your joint angle variables
 	    joint_trajectory_point.positions = [theta1, theta2, theta3, theta4, theta5, theta6]
 	    joint_trajectory_list.append(joint_trajectory_point)
 
