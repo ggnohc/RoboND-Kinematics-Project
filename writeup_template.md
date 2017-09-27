@@ -243,5 +243,5 @@ Here I'll talk about the code, what techniques I used, what worked and why, wher
 Kuka arm drooping the last bottle:
 ![kuka dropping last bottle][kuka_drop]
 
-10 bootles in the drop bin!
+10 bottles in the drop bin!
 ![10 bottles!][kuka_10_bottle]
