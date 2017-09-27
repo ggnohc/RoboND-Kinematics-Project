@@ -31,6 +31,8 @@
 [consine_rule_formula]: ./misc_images/consine_rule_formula.png
 [WC]: ./misc_images/WC.png
 [inverse-kinematics]: ./misc_images/inverse-kinematics.png
+[kuka_drop]: ./misc_images/kuka_drop.png
+[kuka_10_bottle]: ./misc_images/kuka_10_bottle.png
 
 
 
@@ -66,12 +68,14 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
   EE | 0          | 0             | 0.303 (J6_X+JG_X) | 0
 
 
-  - alpha(i−1) (twist angle) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of **Figure 1** below.
+  - alpha(i−1) (twist angles) = angle between Z(i−1) and Z(i) measured about X(i−1) in a right-hand sense. "alpha" value are shown at bottom right of **Figure 1** below.
 
-  ![Insert sketch for kr210 joint and link here][DH_diagram] **Figure 1**
+  ![Insert sketch for kr210 joint and link here][DH_diagram]
+
+  **Figure 1**
 
 
-  From "kr210.urdf.xacro' file excerpt below, the "a" and "d" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation
+  From "kr210.urdf.xacro' file excerpt below, the "a" and "d" parameter can be obtained from **X** or **Z** value of "origin" field depending on axis orientation.  *Note*: URDF file has fixed XYZ orientation based on world coordinate, while DH table has orientation based on joint axis.
 
   - a(i-1) (link length) = distance from Z(i−1) to Z(i) measured along X(i-1) where X(i-1) is perpendicular to both Z(i−1) to Z(i)
 
@@ -137,25 +141,45 @@ Note: *J1_Z* denote Joint 1, Z position; *J2_X* denote Joint 2, X position, and 
 
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 
-
 ![Insert total transform formula here][total_transform_formula]
 
 By referring to formula above, individual transformation matrix are constructed as below, with transformation matrix from base frame to frame 1 as example below:
 
-``` python
-T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
-               [ sin(q1)*cos(alpha0), cos(q1)*cos(alpha0), -sin(alpha0), -sin(alpha0)*d1],
-               [ sin(q1)*sin(alpha0), cos(q1)*sin(alpha0),  cos(alpha0),  cos(alpha0)*d1],
-               [                   0,                   0,            0,               1]])
+  ``` python
+    T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
+                   [ sin(q1)*cos(alpha0), cos(q1)*cos(alpha0), -sin(alpha0), -sin(alpha0)*d1],
+                   [ sin(q1)*sin(alpha0), cos(q1)*sin(alpha0),  cos(alpha0),  cos(alpha0)*d1],
+                   [                   0,                   0,            0,               1]])
 
-T0_1 = T0_1.subs(s)
-```
+    T0_1 = T0_1.subs(s)
+  ```
 
-- [ ] Use tf_echo to validate calculation against model output
+Base link to gripper link homogeneous transform is denoted as below:
+  ```
+    T0_G = T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G
+  ```
 
-https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/91d017b1-4493-4522-ad52-04a74a01094c/concepts/fff7609a-73c8-4f52-881d-c4b87f68593a
+To compensate for orientation difference of gripper link in URDF vs DH convention, a *correction matrix* that account for 180 degree rotation about the Z-axis, followed by -90 degree about the Y-axis is added:
 
+  ```
+    R_y = Matrix([[ cos(-pi/2),  0, sin(-pi/2), 0],
+                  [          0,  1,          0, 0],
+                  [ -sin(-pi/2), 0, cos(-pi/2), 0],
+                  [       0,     0,          0, 1]])
+  ```
 
+  ```
+    R_z = Matrix([[ cos(pi), -sin(pi), 0, 0],
+                  [ sin(pi),  cos(pi), 0, 0],
+                  [       0,        0, 1, 0],
+                  [       0,        0, 0, 1]])
+  ```
+
+The total transformation from base link to gripper is then denoted as:
+
+  ```
+    T_tot = T0_G * R_z * R_y
+  ```  
 #### 3. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
 And here's where you can draw out and show your math for the derivation of your theta angles.
@@ -163,10 +187,11 @@ And here's where you can draw out and show your math for the derivation of your 
 
 
 * Use Inverse Position Kinematics to calculate **Theta1, 2 and 3**.
-  * Since the KR210 satisfies the design of having spherical wrist with the common point of intersection being the joint 5 (J5) being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
+  * Since the kuka arm KR210 satisfies the design of having spherical wrist with the common point of intersection, joint 5 (J5) being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
 
   * The WC can be obtained from formula below:
     ![inverse-kinematics][inverse-kinematics]
+
     ![WC formula][WC]
 
     where Px, Py, Pz = end-effector (EE) a.k.a gripper (G) positions; WCx, WCy, WCz = wrist positions;
@@ -189,9 +214,6 @@ And here's where you can draw out and show your math for the derivation of your 
 
     Note: _When referring to external resources it is critical to know the convention being employed, as Udacity course material is based on **modified** DH parameters while external resources might be using conventional DH parameters, their difference is outlined as below:_
     https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters#Modified_DH_parameters
-  * Go through this https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/91d017b1-4493-4522-ad52-04a74a01094c/concepts/a1abb738-84ee-48b1-82d7-ace881b5aec0 and this https://www.youtube.com/watch?v=llUBbpWVPQE&feature=youtu.be&t=4m45s again
-
-  * Refer top part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
 
 * Use Inverse Position to calculate **Theta4, 5 and 6**.
   * From relationship below:
@@ -200,7 +222,6 @@ And here's where you can draw out and show your math for the derivation of your 
   * Comparing the RHS (Right Hand Side), we can deduce:
     * **R3_6 = inv(R0_3) * Rrpy** where by _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_
 
-  * Refer bottom part of link below for details: https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/8d553d46-d5f3-4f71-9783-427d4dbffa3a
   * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below (source: _Lesson 2-8 Euler Angles from a Rotation Matrix_):
 
     ![Insert composite rotation matrix i formula here][extrinsicxyz]
@@ -208,8 +229,6 @@ And here's where you can draw out and show your math for the derivation of your 
     * alpha = atan2(r21, r11)
     * beta = atan2 (-r31, sqrt(r11*r11+r21*r21))
     * gamma = atan2(r32, r33)
-
-  https://classroom.udacity.com/nanodegrees/nd209/parts/7b2fd2d7-e181-401e-977a-6158c77bf816/modules/8855de3f-2897-46c3-a805-628b5ecf045b/lessons/87c52cd9-09ba-4414-bc30-24ae18277d24/concepts/a124f98b-1ed5-45f5-b8eb-6c40958c1a6b
 
 
 
@@ -221,5 +240,8 @@ And here's where you can draw out and show your math for the derivation of your 
 Here I'll talk about the code, what techniques I used, what worked and why, where the implementation might fail and how I might improve it if I were going to pursue this project further.  
 
 
-And just for fun, another example image:
-![alt text][image3]
+Kuka arm drooping the last bottle:
+![kuka dropping last bottle][kuka_drop]
+
+10 bootles in the drop bin!
+![10 bottles!][kuka_10_bottle]
