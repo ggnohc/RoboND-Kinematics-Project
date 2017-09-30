@@ -247,7 +247,7 @@ Here I'll talk about the code, what techniques I used, what worked and why, wher
 
 
 * One challenge I found is the calculation of theta4, 5 and 6.  Using formulas provided on lesson 2-8 to calculate the euler angles does not give a good error margin, and the arm will either not able to pick up the bottle or will drop it before it reach the bin.
-  * It is only when I used the formula in walkthrough video did I get a reasonable error margin, and the 7 or 8 out of 10 times the robot arm able to drop the bottle into the bin successfully, as depicted in figures below.
+  * It is only when I used the formula in walkthrough video I was get a reasonable error margin, and 8 out of 10 times the robot arm able to drop the bottle into the bin successfully, as depicted in figures below.
 
 Kuka arm drooping the last bottle:
 ![kuka dropping last bottle][kuka_drop]
@@ -256,4 +256,4 @@ Kuka arm drooping the last bottle:
 ![10 bottles!][kuka_10_bottle]
 
 
-* Given more time, I would like to further trace down the source of the error so that the kuka arm is able to pick and drop the bottle at higher rate.
+* Given more time, I would like to further trace down the source of the errors and benchmark it against tf_echo so that the kuka arm is able to pick and drop the bottles at higher rate.
