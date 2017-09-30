@@ -21,7 +21,7 @@
 [image2]: ./misc_images/misc3.png
 [image3]: ./misc_images/misc2.png
 [forward_kinematics.rviz]: ./misc_images/forward_kinematics.rviz.jpg
-[DH_diagram]: ./misc_images/DH_diagram2.png
+[DH_diagram]: ./misc_images/DH_diagram4.png
 [total_transform_formula]: ./misc_images/total_transform_formula.png
 [2_rot_2_trans]: ./misc_images/2_rot_2_trans.png
 [extrinsicxyz]: ./misc_images/extrinsicxyz.png
@@ -186,7 +186,7 @@ And here's where you can draw out and show your math for the derivation of your 
 
 
 
-* Use Inverse Position Kinematics to calculate **Theta1, 2 and 3**.
+* Use _Inverse Position Kinematics_ to calculate **Theta1, 2 and 3**.
   * Since the kuka arm KR210 satisfies the design of having spherical wrist with the common point of intersection, joint 5 (J5) being the wrist center (WC), we can simplify the calculation for Theta1, 2 and 3 by figuring out the relationship between base frame and WC (Xc, Yc and Zc)
 
   * The WC can be obtained from formula below:
@@ -215,9 +215,9 @@ And here's where you can draw out and show your math for the derivation of your 
     Note: _When referring to external resources it is critical to know the convention being employed, as Udacity course material is based on **modified** DH parameters while external resources might be using conventional DH parameters, their difference is outlined as below:_
     https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters#Modified_DH_parameters
 
-* Use Inverse Position to calculate **Theta4, 5 and 6**.
+* Use _Inverse Orientation_ to calculate **Theta4, 5 and 6**.
   * From relationship below:
-    * **R0_6 = R0_1 * R1_2 * R2_3 * R3 * R4_5 * R5_6** (resultant transform based on multiplication of individual rotation)
+    * **R0_6 = R0_1 * R1_2 * R2_3 * R3_4 * R4_5 * R5_6** (resultant transform based on multiplication of individual rotation)
     * **R0_6 = Rrpy** (homogeneous roll pitch yaw rotation between base link and gripper)
   * Comparing the RHS (Right Hand Side), we can deduce:
     * **R3_6 = inv(R0_3) * Rrpy** where by _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_
@@ -226,10 +226,9 @@ And here's where you can draw out and show your math for the derivation of your 
 
     ![Insert composite rotation matrix i formula here][extrinsicxyz]
 
-    * alpha = atan2(r21, r11)
-    * beta = atan2 (-r31, sqrt(r11*r11+r21*r21))
-    * gamma = atan2(r32, r33)
-
+    * theta4 = atan2(r33, -r13)
+    * theta5 = atan2 (sqrt(r13*r13+r33*r33, r23))
+    * theta6 = atan2(-r22, r21)
 
 
 ### Project Implementation
@@ -239,9 +238,22 @@ And here's where you can draw out and show your math for the derivation of your 
 
 Here I'll talk about the code, what techniques I used, what worked and why, where the implementation might fail and how I might improve it if I were going to pursue this project further.  
 
+* The first challenge of the coding part is to get an accurate representation of the kuka arm forward kinematics by filling up the DH parameters, once this is sorted out the remaining challenge is figuring out the theta values, which is the only variables for revolute joints.
+
+* Using techniques outlined in the lecture and inverse kinematics method to decouple the problem, theta 1 to 6 is obtained as elaborated above.
+
+  * The code was then fed into IK_debug.py to bench mark the theta errors and provide quick feedback on potential script errors (typos, wrong values in DH parameters, calculation errors and etc.).
+  *  Once a reasonable result (benched mark by minimal error margin) is obtained, only then the code is ported over to IK_server.py, which should work with minor changes if any.
+
+
+* One challenge I found is the calculation of theta4, 5 and 6.  Using formulas provided on lesson 2-8 to calculate the euler angles does not give a good error margin, and the arm will either not able to pick up the bottle or will drop it before it reach the bin.
+  * It is only when I used the formula in walkthrough video did I get a reasonable error margin, and the 7 or 8 out of 10 times the robot arm able to drop the bottle into the bin successfully, as depicted in figures below.
 
 Kuka arm drooping the last bottle:
 ![kuka dropping last bottle][kuka_drop]
 
 10 bottles in the drop bin!
 ![10 bottles!][kuka_10_bottle]
+
+
+* Given more time, I would like to further trace down the source of the error so that the kuka arm is able to pick and drop the bottle at higher rate.
