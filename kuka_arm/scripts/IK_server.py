@@ -143,12 +143,12 @@ def handle_calculate_IK(req):
                             [       0,         0,        1]])
             Rrpy_ee = ROT_z * ROT_y * ROT_x
 
-	    # Compensate for rotation discrepancy between DH parameters and Gazebo
-    	    R_corr = ROT_z.subs(y, pi)*ROT_y.subs(p, -pi/2)  #TODO: Check why exercise use Homogeneous matrix instead of rotation matrix
+	        # Compensate for rotation discrepancy between DH parameters and Gazebo
+    	    R_corr = ROT_z.subs(y, pi)*ROT_y.subs(p, -pi/2)
             Rrpy_ee = ROT_z * ROT_y * ROT_x * R_corr
             Rrpy_ee = Rrpy_ee.subs({'r': roll, 'p': pitch, 'y': yaw})
 
-	    # Calculate joint angles using Geometric IK method
+	        # Calculate joint angles using Geometric IK method
             # EE position w.r.t base_link
             EE = Matrix([px, py, pz])
 
@@ -202,6 +202,7 @@ def handle_calculate_IK(req):
             R3_6 = R0_3.inv("LU") * Rrpy_ee
 
             # Euler angles from a rotation matrix lesson TODO: Check the formula against lecture
+            # below from walkthrough and works
             theta4 = atan2(R3_6[2,2], -R3_6[0,2])
             theta5 = atan2(sqrt(R3_6[0,2]**2 + R3_6[2,2]**2), R3_6[1,2])
             theta6 = atan2(-R3_6[1,1], R3_6[1,0])
