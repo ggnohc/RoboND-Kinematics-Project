@@ -227,7 +227,7 @@ And here's where you can draw out and show your math for the derivation of your 
     ![Insert composite rotation matrix i formula here][extrinsicxyz]
 
     * theta4 = atan2(r33, -r13)
-    * theta5 = atan2 (sqrt(r13*r13+r33*r33, r23))
+    * theta5 = atan2 (sqrt(r13\*r13+r33\*r33, r23))
     * theta6 = atan2(-r22, r21)
 
 
