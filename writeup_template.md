@@ -222,7 +222,7 @@ And here's where you can draw out and show your math for the derivation of your 
   * Comparing the RHS (Right Hand Side), we can deduce:
     * **R3_6 = inv(R0_3) * Rrpy** where by _Rrpy = Rot(Z, yaw) * Rot(Y, pitch) * Rot(X, roll) * R_corr_
 
-  * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below (source: _Lesson 2-8 Euler Angles from a Rotation Matrix_):
+  * Once R3_6 is obtained, Theta 4, 5 and 6 can be retrieved by extracting the euler angle from rotation matrix from formulas below (source: _Lesson 2-8 Euler Angles from a Rotation Matrix_, See extra note in challenges below on formula derivation):
 
     ![Insert composite rotation matrix i formula here][extrinsicxyz]
 
@@ -248,6 +248,14 @@ Here I'll talk about the code, what techniques I used, what worked and why, wher
 
 * One challenge I found is the calculation of theta4, 5 and 6.  Using formulas provided on lesson 2-8 to calculate the euler angles does not give a good error margin, and the arm will either not able to pick up the bottle or will drop it before it reach the bin.
   * It is only when I used the formula in walkthrough video I was get a reasonable error margin, and 8 out of 10 times the robot arm able to drop the bottle into the bin successfully, as depicted in figures below.
+  * _Update 10/02/17_
+    Derivation of theta 4 through 6 is by getting from "R3_6 = T3_4[0:3,0:3] * T4_5[0:3,0:3] * T5_6[0:3,0:3]", which output the following result.  Then q4, a5 and q6 can be derived using formula similar to lesson 2-8.
+
+    ```
+    Matrix([[-sin(q4)*sin(q6) + cos(q4)*cos(q5)*cos(q6),  -sin(q4)*cos(q6) - sin(q6)*cos(q4)*cos(q5),    -sin(q5)*cos(q4)],
+            [                           sin(q5)*cos(q6),                            -sin(q5)*sin(q6),             cos(q5)],
+            [-sin(q4)*cos(q5)*cos(q6) - sin(q6)*cos(q4),   sin(q4)*sin(q6)*cos(q5) - cos(q4)*cos(q6),    sin(q4)*sin(q5)]])
+    ```
 
 Kuka arm drooping the last bottle:
 ![kuka dropping last bottle][kuka_drop]
